@@ -29,16 +29,34 @@ int main() {
     const auto &res = results[i];
 
     if (res.is_ok()) {
+      // unwrap is not noexcept, throws if !res.is_ok()
       const auto msg = res.unwrap();
+
       if (msg->is_ownship()) {
         const auto &os = msg->get_ownship();
         fmt::println("  Latitude: {:.6f}", os.latitude.degrees());
         fmt::println("  Longitude: {:.6f}", os.longitude.degrees());
         fmt::println("  Altitude: {:.0f} ft", os.altitude.feet());
         fmt::println("  Groundspeed: {} kt", os.horizontal_velocity.knots());
+
+        const auto &lat = os.latitude;
+        fmt::println("Some ways to format latitude:"
+                     "\n  {} rad"
+                     "\n  {} °"
+                     "\n  {} ′"
+                     "\n  {} ″"
+                     "\n  {} r",
+                     lat.radians(), lat.degrees(), lat.minutes(), lat.seconds(),
+                     lat.revolutions());
       }
     } else {
       fmt::println("  Error: {}", res.err().c_str());
     }
+  }
+
+  try {
+    const auto &os = results[0].unwrap()->get_ownship();
+  } catch (const rust::Error &e) {
+    fmt::println("Catching rust error as exception: {}", e.what());
   }
 }
