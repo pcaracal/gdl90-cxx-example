@@ -22,7 +22,7 @@ static const std::vector<uint8_t> data = {
 // clang-format on
 
 int main() {
-  auto results = gdl90::Message::from_gdl90_bytes(data);
+  auto results = gdl90::parse_gdl90_bytes(data);
 
   for (size_t i = 0; i < results.size(); ++i) {
     fmt::println("Message {}:", i);
@@ -30,18 +30,13 @@ int main() {
 
     if (res.is_ok()) {
       const auto msg = res.unwrap();
-      const auto type = msg->get_type();
-      fmt::println("  Type: {}", to_string(type).c_str());
-
       if (msg->is_ownship()) {
-        const auto &os = msg->ownship();
-        fmt::println("  Latitude: {:.6f}", os->latitude()->degrees());
-        fmt::println("  Longitude: {:.6f}", os->longitude()->degrees());
-        fmt::println("  Altitude: {:.0f} ft", os->altitude()->feet());
-        fmt::println("  Groundspeed: {} kt",
-                     os->horizontal_velocity()->knots());
+        const auto &os = msg->get_ownship();
+        fmt::println("  Latitude: {:.6f}", os.latitude.degrees());
+        fmt::println("  Longitude: {:.6f}", os.longitude.degrees());
+        fmt::println("  Altitude: {:.0f} ft", os.altitude.feet());
+        fmt::println("  Groundspeed: {} kt", os.horizontal_velocity.knots());
       }
-
     } else {
       fmt::println("  Error: {}", res.err().c_str());
     }

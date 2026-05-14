@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # add_subdirectory(../gdl90 ${CMAKE_BINARY_DIR}/gdl90)
 include(FetchContent)
-FetchContent_Declare(gdl90 GIT_REPOSITORY git@github.com:pcaracal/gdl90.git GIT_TAG ffi-cxx)
+FetchContent_Declare(gdl90 GIT_REPOSITORY git@github.com:pcaracal/gdl90.git)
 FetchContent_MakeAvailable(gdl90)
 
 add_executable(main main.cpp)
